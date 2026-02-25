@@ -28,8 +28,8 @@ export default function JourneyReplay({ profile }) {
   });
 
   return (
-    <div className="glass-card-sm p-5 bg-white border-slate-200">
-      <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-4">
+    <div className="glass-card-sm p-4 sm:p-5 bg-white border-slate-200">
+      <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3 sm:mb-4">
         🎬 Cross-Channel Journey Replay
       </h3>
 

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, Send, User, Sparkles, MessageSquare } from 'lucide-react';
+import { Bot, Send, User, Sparkles, MessageSquare, X } from 'lucide-react';
 import { useMDFStore } from '@/store/store';
 
 function MarkdownText({ text }) {
@@ -24,11 +24,12 @@ function MarkdownText({ text }) {
   );
 }
 
-export default function AIAssistant() {
+export default function AIAssistant({ isFloating = false }) {
   const chatMessages = useMDFStore((s) => s.chatMessages);
   const addUserMessage = useMDFStore((s) => s.addUserMessage);
   const processingStage = useMDFStore((s) => s.processingStage);
   const [input, setInput] = useState('');
+  const [isOpen, setIsOpen] = useState(!isFloating);
   const endRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -57,23 +58,56 @@ export default function AIAssistant() {
     'What is a Golden Record?',
   ];
 
-  return (
-    <div className="glass-card flex flex-col h-full min-h-[600px] lg:min-h-0 lg:h-[calc(100vh-105px)]">
+  // If it's the floating version but currently closed, only render the FAB.
+  if (isFloating && !isOpen) {
+    return (
+      <AnimatePresence>
+        <motion.button
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0, opacity: 0 }}
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-xl shadow-indigo-500/20 hover:shadow-indigo-500/40 text-white"
+          style={{ background: 'var(--gradient-primary)' }}
+        >
+          <MessageSquare size={24} />
+          {/* Notification dot if processing */}
+          {processingStage !== 'idle' && processingStage !== 'complete' && (
+            <span className="absolute top-0 right-0 w-3.5 h-3.5 bg-rose-500 border-2 border-white rounded-full animate-pulse-dot" />
+          )}
+        </motion.button>
+      </AnimatePresence>
+    );
+  }
+
+  // The chat widget content
+  const chatContent = (
+    <div className={`glass-card flex flex-col ${isFloating ? 'h-[600px] w-[350px] shadow-2xl relative overflow-hidden' : 'h-full min-h-[600px] lg:min-h-0 min-[1440px]:h-[calc(100vh-105px)]'}`}>
       {/* Header */}
-      <div className="p-5 border-b border-slate-200 flex-shrink-0 bg-white/50">
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-violet-50">
-            <Bot size={20} className="text-violet-600" />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-slate-900">MDF Consultant</h2>
-            <div className="flex items-center gap-2 mt-0.5">
-              <div className={`w-2 h-2 rounded-full ${processingStage !== 'idle' && processingStage !== 'complete' ? 'bg-amber-500 animate-pulse-dot' : 'bg-emerald-500'}`} />
-              <p className="text-base font-medium text-slate-500">
-                {processingStage !== 'idle' && processingStage !== 'complete' ? 'Narrating simulation...' : 'Ready to assist'}
-              </p>
+      <div className="p-4 border-b border-slate-200 flex-shrink-0 bg-white/50">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-violet-50">
+              <Bot size={20} className="text-violet-600" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-slate-900">MDF Consultant</h2>
+              <div className="flex items-center gap-2 mt-0.5">
+                <div className={`w-2 h-2 rounded-full ${processingStage !== 'idle' && processingStage !== 'complete' ? 'bg-amber-500 animate-pulse-dot' : 'bg-emerald-500'}`} />
+                <p className="text-sm font-medium text-slate-500">
+                  {processingStage !== 'idle' && processingStage !== 'complete' ? 'Narrating simulation...' : 'Ready to assist'}
+                </p>
+              </div>
             </div>
           </div>
+          {isFloating && (
+            <button 
+              onClick={() => setIsOpen(false)}
+              className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center hover:bg-slate-200 text-slate-500"
+            >
+              <X size={18} />
+            </button>
+          )}
         </div>
       </div>
 
@@ -169,7 +203,7 @@ export default function AIAssistant() {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Ask about MDF concepts..."
-            className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 text-lg text-slate-900 placeholder:text-slate-400 outline-none focus:border-indigo-400 focus:ring-[3px] focus:ring-indigo-500/20 transition-all duration-300 shadow-sm"
+            className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 outline-none focus:border-indigo-400 focus:ring-[3px] focus:ring-indigo-500/20 transition-all duration-300 shadow-sm"
           />
           <motion.button
             onClick={handleSend}
@@ -184,4 +218,34 @@ export default function AIAssistant() {
       </div>
     </div>
   );
+
+  if (isFloating) {
+    return (
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            {/* Backdrop for floating widget */}
+            <motion.div 
+              className="fixed inset-0 bg-slate-900/10 backdrop-blur-sm z-40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsOpen(false)}
+            />
+            <motion.div
+              className="fixed bottom-6 right-6 z-50 origin-bottom-right"
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            >
+              {chatContent}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    );
+  }
+
+  // Not floating: return inline content directly
+  return chatContent;
 }

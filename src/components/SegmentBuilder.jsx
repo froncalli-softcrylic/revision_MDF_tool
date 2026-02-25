@@ -96,7 +96,7 @@ export default function SegmentBuilder() {
   if (unifiedProfiles.length === 0) return null;
 
   return (
-    <div className="glass-card overflow-hidden">
+    <div className="glass-card overflow-hidden w-full">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full p-4 flex items-center justify-between hover:bg-slate-50/50 transition-colors"
@@ -124,7 +124,7 @@ export default function SegmentBuilder() {
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
           >
-            <div className="px-4 pb-4 space-y-3">
+            <div className="px-3 sm:px-4 pb-3 sm:pb-4 space-y-3">
               {/* Rules */}
               {rules.map((rule, idx) => {
                 const fieldDef = FIELD_OPTIONS.find((f) => f.value === rule.field);
@@ -132,7 +132,7 @@ export default function SegmentBuilder() {
                 return (
                   <motion.div
                     key={rule.id}
-                    className="flex items-center gap-2 p-2 rounded-lg bg-slate-50 border border-slate-100"
+                    className="flex flex-wrap items-center gap-2 p-2 rounded-lg bg-slate-50 border border-slate-100"
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                   >

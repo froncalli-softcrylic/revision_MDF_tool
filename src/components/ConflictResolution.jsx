@@ -78,13 +78,13 @@ export default function ConflictResolution({ profile }) {
   if (conflicts.length === 0) return null;
 
   return (
-    <div className="glass-card-sm p-5 bg-white border-slate-200">
-      <div className="flex items-center gap-2 mb-4">
-        <Shield size={14} className="text-amber-600" />
+    <div className="glass-card-sm p-4 sm:p-5 bg-white border-slate-200 overflow-x-auto">
+      <div className="flex flex-wrap items-center gap-2 mb-4">
+        <Shield size={14} className="text-amber-600 flex-shrink-0" />
         <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
           Conflict Resolution
         </h3>
-        <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-full border border-amber-100 ml-auto">
+        <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-full border border-amber-100 sm:ml-auto mt-1 sm:mt-0">
           {conflicts.length} field{conflicts.length !== 1 ? 's' : ''} resolved
         </span>
       </div>
@@ -98,9 +98,9 @@ export default function ConflictResolution({ profile }) {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: idx * 0.1 }}
           >
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-0 mb-2">
               <span className="text-[11px] font-bold text-slate-800">{conflict.field}</span>
-              <span className="text-[9px] font-semibold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+              <span className="text-[9px] font-semibold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 w-fit">
                 Strategy: {conflict.strategy}
               </span>
             </div>
@@ -126,12 +126,12 @@ export default function ConflictResolution({ profile }) {
             </div>
 
             {/* Winner */}
-            <div className="flex items-center gap-2 pt-1.5 border-t border-slate-100">
-              <ArrowRight size={10} className="text-emerald-500" />
+            <div className="flex flex-wrap items-center gap-2 pt-1.5 border-t border-slate-100 mt-2">
+              <ArrowRight size={10} className="text-emerald-500 hidden sm:block" />
               <span className="text-[10px] font-bold text-emerald-700">
-                Winner: <code className="bg-emerald-50 px-1 py-0.5 rounded">{conflict.winner}</code>
+                Winner: <code className="bg-emerald-50 px-1 py-0.5 rounded break-all">{conflict.winner}</code>
               </span>
-              <span className="text-[9px] text-slate-400 ml-auto">from {conflict.winnerSource}</span>
+              <span className="text-[9px] text-slate-400 sm:ml-auto w-full sm:w-auto">from {conflict.winnerSource}</span>
             </div>
           </motion.div>
         ))}

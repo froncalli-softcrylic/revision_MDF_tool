@@ -122,9 +122,9 @@ export default function MDFEngine() {
       </div>
 
       {/* Pipeline + Governance Layout */}
-      <div className="flex gap-3">
+      <div className="flex gap-2 sm:gap-3">
         {/* Governance Left Rail */}
-        <div className="governance-rail p-2 flex flex-col gap-3 items-center justify-center w-12 flex-shrink-0">
+        <div className="hidden md:flex governance-rail p-2 flex-col gap-3 items-center justify-center w-12 flex-shrink-0">
           {GOVERNANCE.map((g) => (
             <div key={g.label} className="flex flex-col items-center gap-1" title={g.label}>
               <g.icon size={14} className="text-amber-600/70" />
@@ -161,7 +161,7 @@ export default function MDFEngine() {
           </AnimatePresence>
 
           {/* 4 MDF Pillars */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
             {STAGES.map((stage, idx) => {
               const stageIdx = getStageIndex(stage.id);
               const isActiveStage = processingStage === stage.id;
@@ -231,11 +231,11 @@ export default function MDFEngine() {
                   {(isActiveStage || isPast) && stage.whyItMatters && (
                     <motion.div
                       className="mt-2 px-2 py-1.5 rounded-lg bg-indigo-50/70 border border-indigo-100"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 }}
                     >
-                      <p className="text-xs text-indigo-700 font-medium leading-relaxed">
+                      <p className="text-xs text-indigo-700 font-medium leading-relaxed break-words break-all sm:break-normal">
                         💡 {stage.whyItMatters}
                       </p>
                     </motion.div>
@@ -278,7 +278,7 @@ export default function MDFEngine() {
                   </span>
                   <ArrowUp size={16} className="text-indigo-500 animate-float" />
                 </div>
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
                   {MARTECH.map((item, idx) => (
                     <motion.div
                       key={item.label}
@@ -315,7 +315,7 @@ export default function MDFEngine() {
         </div>
 
         {/* Governance Right Rail */}
-        <div className="governance-rail p-2 flex flex-col gap-3 items-center justify-center w-12 flex-shrink-0">
+        <div className="hidden md:flex governance-rail p-2 flex-col gap-3 items-center justify-center w-12 flex-shrink-0">
           <span className="text-sm text-amber-600/70 font-bold uppercase tracking-widest" style={{ writingMode: 'vertical-rl' }}>
             Enterprise Controls
           </span>
@@ -353,29 +353,29 @@ export default function MDFEngine() {
                   className="glass-card-sm p-4 cursor-pointer border border-slate-200 hover-lift bg-white hover:bg-slate-50/50 hover:border-indigo-300 group"
                   onClick={() => selectProfile(profile)}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center text-xl font-bold text-white shadow-sm"
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center text-xl font-bold text-white shadow-sm flex-shrink-0"
                         style={{ background: 'var(--gradient-primary)' }}>
                         {profile.firstName[0]}{profile.lastName[0]}
                       </div>
                       <div>
-                        <p className="text-lg font-bold text-slate-900">
+                        <p className="text-base sm:text-lg font-bold text-slate-900 leading-tight">
                           {profile.firstName} {profile.lastName}
                         </p>
-                        <p className="text-base font-medium text-slate-500">{profile.email || 'No email'}</p>
+                        <p className="text-sm sm:text-base font-medium text-slate-500 truncate max-w-[200px] sm:max-w-none">{profile.email || 'No email'}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <div className="text-right">
+                    <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
+                      <div className="text-left sm:text-right">
                         <p className="text-base text-emerald-600 font-bold">${profile.ltv.toLocaleString()} LTV</p>
-                        <div className="flex gap-1 mt-1 justify-end">
+                        <div className="flex gap-1 mt-1 justify-start sm:justify-end">
                           {profile.sources.map((s) => (
                             <span key={s} className="w-2 h-2 rounded-full bg-indigo-500" title={s} />
                           ))}
                         </div>
                       </div>
-                      <ChevronRight size={18} className="text-slate-400 group-hover:text-indigo-600 group-hover:translate-x-1.5 transition-all duration-300" />
+                      <ChevronRight size={18} className="text-slate-400 group-hover:text-indigo-600 group-hover:translate-x-1.5 transition-all duration-300 flex-shrink-0" />
                     </div>
                   </div>
 

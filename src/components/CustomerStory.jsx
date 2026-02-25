@@ -42,16 +42,16 @@ export default function CustomerStory({ profile }) {
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
         >
           {/* Header */}
-          <div className="sticky top-0 z-10 p-6 border-b border-slate-200 bg-white/90 backdrop-blur-md">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl font-bold text-white"
+          <div className="sticky top-0 z-10 p-4 sm:p-6 border-b border-slate-200 bg-white/90 backdrop-blur-md">
+            <div className="flex items-start sm:items-center justify-between gap-2">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center text-2xl sm:text-3xl font-bold text-white flex-shrink-0"
                   style={{ background: 'var(--gradient-primary)' }}>
                   {profile.firstName[0]}{profile.lastName[0]}
                 </div>
                 <div>
-                  <h2 className="text-3xl font-bold text-slate-900">{profile.firstName} {profile.lastName}</h2>
-                  <p className="text-lg font-medium text-slate-500">Golden Record · Unified Profile</p>
+                  <h2 className="text-xl sm:text-3xl font-bold text-slate-900 leading-tight">{profile.firstName} {profile.lastName}</h2>
+                  <p className="text-sm sm:text-lg font-medium text-slate-500">Golden Record</p>
                   <div className="flex gap-2 mt-2 flex-wrap">
                     {profile.sources.map((s) => (
                       <span key={s} className="badge badge-source">{s}</span>
@@ -93,13 +93,13 @@ export default function CustomerStory({ profile }) {
             </div>
           </div>
 
-          <div className="p-6 space-y-6">
+          <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
             {/* The Customer Story */}
-            <div className="glass-card-sm p-5 bg-indigo-50/50 border-indigo-100">
-              <h3 className="text-lg font-bold text-indigo-600 uppercase tracking-wider mb-2">
+            <div className="glass-card-sm p-4 sm:p-5 bg-indigo-50/50 border-indigo-100">
+              <h3 className="text-base sm:text-lg font-bold text-indigo-600 uppercase tracking-wider mb-2">
                 📖 The Customer Story
               </h3>
-              <p className="text-xl text-slate-700 leading-relaxed font-medium">
+              <p className="text-lg sm:text-xl text-slate-700 leading-relaxed font-medium">
                 <strong>{profile.firstName} {profile.lastName}</strong> was created by merging{' '}
                 <strong>{profile.recordCount} source records</strong> across{' '}
                 {profile.sources.join(', ')}. Records arrived via{' '}
@@ -133,19 +133,19 @@ export default function CustomerStory({ profile }) {
             </div>
 
             {/* Contact Info */}
-            <div className="glass-card-sm p-5 bg-white border-slate-200">
-              <h3 className="text-lg font-bold text-slate-900 mb-4">Contact Information</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="glass-card-sm p-4 sm:p-5 bg-white border-slate-200">
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-3 sm:mb-4">Contact Information</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {profile.email && (
-                  <div className="flex items-center gap-3">
-                    <Mail size={16} className="text-indigo-500" />
-                    <span className="text-lg font-medium text-slate-700">{profile.email}</span>
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <Mail size={16} className="text-indigo-500 flex-shrink-0" />
+                    <span className="text-base sm:text-lg font-medium text-slate-700 truncate">{profile.email}</span>
                   </div>
                 )}
                 {profile.phone && (
-                  <div className="flex items-center gap-3">
-                    <Phone size={16} className="text-indigo-500" />
-                    <span className="text-lg font-medium text-slate-700">{profile.phone}</span>
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <Phone size={16} className="text-indigo-500 flex-shrink-0" />
+                    <span className="text-base sm:text-lg font-medium text-slate-700">{profile.phone}</span>
                   </div>
                 )}
                 {profile.city && (
@@ -184,13 +184,13 @@ export default function CustomerStory({ profile }) {
                         animate={{ left: ['-50%', '150%'] }}
                         transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 1.5, delay: idx * 0.3 }}
                       />
-                      <span className="text-base font-bold text-slate-500 w-20 flex-shrink-0 relative z-10">{example.field}</span>
+                      <span className="text-sm sm:text-base font-bold text-slate-500 w-16 sm:w-20 flex-shrink-0 relative z-10">{example.field}</span>
                       <div className="flex-1 flex flex-col gap-1 min-w-0 relative z-10">
-                        <div className="flex items-center gap-3">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                           <div className="flex-1 px-3 py-1.5 rounded-lg bg-rose-50 border border-rose-100 shadow-sm relative overflow-hidden">
-                             <code className="text-base font-semibold text-rose-600 break-all">{example.before}</code>
+                             <code className="text-xs sm:text-base font-semibold text-rose-600 break-all">{example.before}</code>
                           </div>
-                          <ArrowRight size={16} className="text-slate-400 flex-shrink-0" />
+                          <ArrowRight size={16} className="text-slate-400 flex-shrink-0 hidden sm:block" />
                           <div className="flex-1 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-100 shadow-sm relative overflow-hidden hover-lift">
                             <motion.div 
                                className="absolute inset-0 bg-emerald-400/10"
@@ -329,9 +329,9 @@ export default function CustomerStory({ profile }) {
             )}
 
             {/* Identifier Summary */}
-            <div className="glass-card-sm p-5 bg-white border-slate-200">
-              <h3 className="text-lg font-bold text-slate-900 mb-4">🔑 Identifiers</h3>
-              <div className="grid grid-cols-2 gap-2">
+            <div className="glass-card-sm p-4 sm:p-5 bg-white border-slate-200">
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-3 sm:mb-4">🔑 Identifiers</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {[
                   { label: 'CRM ID', value: profile.crmId },
                   { label: 'Commerce ID', value: profile.customerId },
@@ -339,9 +339,9 @@ export default function CustomerStory({ profile }) {
                   { label: 'Cookie ID', value: profile.cookieId },
                   { label: 'Device ID', value: profile.deviceId },
                 ].filter((i) => i.value).map((item) => (
-                  <div key={item.label} className="p-3 rounded-xl bg-slate-50 border border-slate-200">
-                    <p className="text-sm font-bold text-slate-500 mb-1">{item.label}</p>
-                    <code className="text-base font-medium text-slate-800 break-all">{item.value}</code>
+                  <div key={item.label} className="p-2 sm:p-3 rounded-xl bg-slate-50 border border-slate-200 overflow-hidden">
+                    <p className="text-xs sm:text-sm font-bold text-slate-500 mb-0.5 sm:mb-1">{item.label}</p>
+                    <code className="text-sm sm:text-base font-medium text-slate-800 break-all">{item.value}</code>
                   </div>
                 ))}
               </div>
