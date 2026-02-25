@@ -1,101 +1,83 @@
-import Image from "next/image";
+'use client';
+
+import InfrastructurePanel from '@/components/InfrastructurePanel';
+import MDFEngine from '@/components/MDFEngine';
+import AIAssistant from '@/components/AIAssistant';
+import CustomerStory from '@/components/CustomerStory';
+import ScenarioPresets from '@/components/ScenarioPresets';
+import EdgeCaseDemos from '@/components/EdgeCaseDemos';
+import IdentityModeToggle from '@/components/IdentityModeToggle';
+import HygieneRulesPanel from '@/components/HygieneRulesPanel';
+import ValidationBanner from '@/components/ValidationBanner';
+import SimulationControls from '@/components/SimulationControls';
+import GovernancePanel from '@/components/GovernancePanel';
+import SourceDependencyMap from '@/components/SourceDependencyMap';
+import ConsentLayer from '@/components/ConsentLayer';
+import { useMDFStore } from '@/store/store';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const selectedProfile = useMDFStore((s) => s.selectedProfile);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  return (
+    <main className="min-h-screen w-full">
+      {/* Header */}
+      <header className="w-full px-6 py-5 border-b border-slate-200 bg-white/50 backdrop-blur-md sticky top-0 z-40">
+        <div className="max-w-[1920px] mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+              style={{ background: 'var(--gradient-primary)' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"
+                strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                <path d="M2 17l10 5 10-5" />
+                <path d="M2 12l10 5 10-5" />
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight text-slate-900">MDF Simulator</h1>
+              <p className="text-base text-slate-500 font-medium">Marketing Data Foundation</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="badge badge-source text-sm">v1.0</span>
+            <span className="text-base text-slate-600">Data-Centric Architecture</span>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </header>
+
+      {/* Validation Banner */}
+      <div className="max-w-[1920px] mx-auto px-5 md:px-8 pt-4">
+        <ValidationBanner />
+      </div>
+
+      {/* 3-Column Layout */}
+      <div className="max-w-[1920px] mx-auto p-5 md:p-8 grid grid-cols-1 lg:grid-cols-[340px_1fr_380px] gap-6 min-h-[calc(100vh-73px)]">
+        {/* Column 1: Infrastructure */}
+        <aside className="lg:max-h-[calc(100vh-105px)] overflow-y-auto space-y-4">
+          <ScenarioPresets />
+          <InfrastructurePanel />
+          <EdgeCaseDemos />
+          <IdentityModeToggle />
+          <HygieneRulesPanel />
+          <SimulationControls />
+          <GovernancePanel />
+          <SourceDependencyMap />
+          <ConsentLayer />
+        </aside>
+
+        {/* Column 2: MDF Engine */}
+        <section className="lg:max-h-[calc(100vh-105px)] overflow-y-auto">
+          <MDFEngine />
+        </section>
+
+        {/* Column 3: AI Assistant */}
+        <aside className="lg:max-h-[calc(100vh-105px)] overflow-y-auto">
+          <AIAssistant />
+        </aside>
+      </div>
+
+      {/* Customer Story Modal */}
+      {selectedProfile && <CustomerStory profile={selectedProfile} />}
+    </main>
   );
 }
