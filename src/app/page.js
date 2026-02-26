@@ -1,26 +1,22 @@
 'use client';
 
-import InfrastructurePanel from '@/components/InfrastructurePanel';
 import MDFEngine from '@/components/MDFEngine';
 import AIAssistant from '@/components/AIAssistant';
 import CustomerStory from '@/components/CustomerStory';
-import ScenarioPresets from '@/components/ScenarioPresets';
-import EdgeCaseDemos from '@/components/EdgeCaseDemos';
-import IdentityModeToggle from '@/components/IdentityModeToggle';
-import HygieneRulesPanel from '@/components/HygieneRulesPanel';
 import ValidationBanner from '@/components/ValidationBanner';
-import SimulationControls from '@/components/SimulationControls';
-import GovernancePanel from '@/components/GovernancePanel';
-import SourceDependencyMap from '@/components/SourceDependencyMap';
-import ConsentLayer from '@/components/ConsentLayer';
+import InfrastructureSidebar from '@/components/InfrastructureSidebar';
+import CommandPalette from '@/components/CommandPalette';
 import { useMDFStore } from '@/store/store';
 import { useState, useEffect } from 'react';
-import { ChevronRight, ChevronLeft } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Moon, Sun } from 'lucide-react';
 
 export default function Home() {
   const selectedProfile = useMDFStore((s) => s.selectedProfile);
   const processingStage = useMDFStore((s) => s.processingStage);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  const theme = useMDFStore((s) => s.theme);
+  const toggleTheme = useMDFStore((s) => s.toggleTheme);
 
   // Auto-hide the sidebar when simulation becomes active
   useEffect(() => {
@@ -29,8 +25,19 @@ export default function Home() {
     }
   }, [processingStage]);
 
+  // Sync theme with HTML document element
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
+
   return (
     <main className="min-h-screen w-full">
+      <CommandPalette />
+      
       {/* Header */}
       <header className="w-full px-6 py-5 border-b border-slate-200 bg-white/50 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-[1920px] mx-auto flex items-center justify-between">
@@ -45,11 +52,18 @@ export default function Home() {
               </svg>
             </div>
             <div>
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-slate-900">MDF Simulator</h1>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-slate-900">Marketing Data Foundation Tool</h1>
               <p className="text-xs sm:text-sm md:text-base text-slate-500 font-medium">Marketing Data Foundation</p>
             </div>
           </div>
-          <div className="hidden sm:flex items-center gap-2">
+          <div className="hidden sm:flex items-center gap-3">
+            <button
+              onClick={toggleTheme}
+              className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors text-slate-500"
+              title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            >
+              {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
             <span className="badge badge-source text-xs md:text-sm">v1.0</span>
             <span className="text-sm md:text-base text-slate-600">Data-Centric Architecture</span>
           </div>
@@ -78,16 +92,8 @@ export default function Home() {
       } gap-6 min-h-[calc(100vh-73px)] relative z-10 transition-all duration-500`}>
         
         {/* Column 1: Infrastructure */}
-        <aside className={`${isSidebarOpen ? 'block' : 'hidden'} md:col-span-1 md:max-h-[calc(100vh-105px)] overflow-y-auto space-y-4 pr-1`}>
-          <ScenarioPresets />
-          <InfrastructurePanel />
-          <EdgeCaseDemos />
-          <IdentityModeToggle />
-          <HygieneRulesPanel />
-          <SimulationControls />
-          <GovernancePanel />
-          <SourceDependencyMap />
-          <ConsentLayer />
+        <aside className={`${isSidebarOpen ? 'block' : 'hidden'} md:col-span-1 pr-1`}>
+          <InfrastructureSidebar />
         </aside>
 
         {/* Column 2: MDF Engine */}

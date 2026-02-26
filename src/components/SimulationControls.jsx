@@ -29,8 +29,8 @@ export default function SimulationControls() {
   const isRunning = !isIdle && !isComplete;
 
   return (
-    <div className="glass-card p-4">
-      <div className="flex items-center gap-2 mb-3">
+    <div>
+      <div className="flex items-center gap-2 mb-4">
         <Zap size={14} className="text-indigo-600" />
         <h3 className="text-base font-bold text-slate-900 uppercase tracking-wider">Simulation Mode</h3>
       </div>

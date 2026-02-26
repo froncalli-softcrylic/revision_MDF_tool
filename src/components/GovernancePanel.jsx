@@ -54,8 +54,8 @@ export default function GovernancePanel() {
   const toggleGovernance = useMDFStore((s) => s.toggleGovernance);
 
   return (
-    <div className="glass-card p-4">
-      <div className="flex items-center justify-between mb-3">
+    <div>
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Shield size={14} className="text-indigo-600" />
           <h3 className="text-base font-bold text-slate-900 uppercase tracking-wider">Governance & Compliance</h3>

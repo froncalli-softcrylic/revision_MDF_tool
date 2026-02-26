@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Filter, Plus, X, Users, Download, ChevronDown } from 'lucide-react';
+import { useState, useMemo, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, Reorder } from 'framer-motion';
+import { Filter, Plus, X, Users, ChevronDown, GripVertical } from 'lucide-react';
 import { useMDFStore } from '@/store/store';
 
 const FIELD_OPTIONS = [
@@ -46,6 +46,41 @@ function evaluateRule(profile, rule) {
     if (rule.operator === 'neq') return val !== rule.value;
   }
   return true;
+}
+
+/**
+ * AnimatedCounter — counts up smoothly from 0 to targetValue
+ */
+function AnimatedCounter({ value, className = '' }) {
+  const [display, setDisplay] = useState(0);
+  const rafRef = useRef(null);
+  const startRef = useRef(null);
+  const prevValueRef = useRef(0);
+
+  useEffect(() => {
+    const fromValue = prevValueRef.current;
+    startRef.current = null;
+
+    const animate = (timestamp) => {
+      if (!startRef.current) startRef.current = timestamp;
+      const elapsed = timestamp - startRef.current;
+      const duration = 600;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(Math.round(fromValue + (value - fromValue) * eased));
+
+      if (progress < 1) {
+        rafRef.current = requestAnimationFrame(animate);
+      } else {
+        prevValueRef.current = value;
+      }
+    };
+
+    rafRef.current = requestAnimationFrame(animate);
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, [value]);
+
+  return <span className={className}>{display}</span>;
 }
 
 export default function SegmentBuilder() {
@@ -106,7 +141,7 @@ export default function SegmentBuilder() {
           <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Audience Segment Builder</h3>
           {rules.length > 0 && (
             <span className="text-[10px] font-bold text-white bg-indigo-500 px-1.5 py-0.5 rounded-full">
-              {matchingProfiles.length}/{unifiedProfiles.length}
+              <AnimatedCounter value={matchingProfiles.length} />/{unifiedProfiles.length}
             </span>
           )}
         </div>
@@ -124,76 +159,111 @@ export default function SegmentBuilder() {
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
           >
-            <div className="px-3 sm:px-4 pb-3 sm:pb-4 space-y-3">
-              {/* Rules */}
-              {rules.map((rule, idx) => {
-                const fieldDef = FIELD_OPTIONS.find((f) => f.value === rule.field);
-                const ops = OPERATORS[rule.type] || [];
-                return (
-                  <motion.div
-                    key={rule.id}
-                    className="flex flex-wrap items-center gap-2 p-2 rounded-lg bg-slate-50 border border-slate-100"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                  >
-                    {idx > 0 && <span className="text-[10px] font-bold text-indigo-500">AND</span>}
-                    <select
-                      value={rule.field}
-                      onChange={(e) => changeField(rule.id, e.target.value)}
-                      className="text-[11px] font-medium bg-white border border-slate-200 rounded px-2 py-1 text-slate-700 outline-none"
+            <div className="px-3 sm:px-4 pb-3 sm:pb-4 space-y-2">
+              {/* Rules with drag reorder */}
+              <Reorder.Group axis="y" values={rules} onReorder={setRules} className="space-y-2">
+                {rules.map((rule, idx) => {
+                  const fieldDef = FIELD_OPTIONS.find((f) => f.value === rule.field);
+                  const ops = OPERATORS[rule.type] || [];
+                  return (
+                    <Reorder.Item
+                      key={rule.id}
+                      value={rule}
+                      className="flex flex-wrap items-center gap-2 p-2.5 rounded-xl bg-white border border-slate-200 shadow-sm cursor-default"
                     >
-                      {FIELD_OPTIONS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
-                    </select>
-                    <select
-                      value={rule.operator}
-                      onChange={(e) => updateRule(rule.id, { operator: e.target.value })}
-                      className="text-[11px] font-medium bg-white border border-slate-200 rounded px-2 py-1 text-slate-700 outline-none"
-                    >
-                      {ops.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-                    </select>
-                    {rule.type === 'number' && (
-                      <input
-                        type="number"
-                        value={rule.value}
-                        onChange={(e) => updateRule(rule.id, { value: e.target.value })}
-                        className="text-[11px] font-medium bg-white border border-slate-200 rounded px-2 py-1 w-20 text-slate-700 outline-none"
-                      />
-                    )}
-                    {rule.type === 'select' && (
+                      {/* Drag handle */}
+                      <div className="cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-400 flex-shrink-0">
+                        <GripVertical size={14} />
+                      </div>
+
+                      {/* AND connector */}
+                      {idx > 0 && (
+                        <span className="text-[10px] font-black text-white bg-indigo-500 px-2 py-0.5 rounded-full shadow-sm">AND</span>
+                      )}
+
                       <select
-                        value={rule.value}
-                        onChange={(e) => updateRule(rule.id, { value: e.target.value })}
-                        className="text-[11px] font-medium bg-white border border-slate-200 rounded px-2 py-1 text-slate-700 outline-none"
+                        value={rule.field}
+                        onChange={(e) => changeField(rule.id, e.target.value)}
+                        className="text-[11px] font-medium bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-slate-700 outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-500/10"
                       >
-                        {fieldDef.options.map((o) => <option key={o} value={o}>{o}</option>)}
+                        {FIELD_OPTIONS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
                       </select>
-                    )}
-                    <button onClick={() => removeRule(rule.id)} className="text-slate-400 hover:text-rose-500 ml-auto">
-                      <X size={12} />
-                    </button>
-                  </motion.div>
-                );
-              })}
+                      <select
+                        value={rule.operator}
+                        onChange={(e) => updateRule(rule.id, { operator: e.target.value })}
+                        className="text-[11px] font-medium bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-slate-700 outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-500/10"
+                      >
+                        {ops.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+                      </select>
+                      {rule.type === 'number' && (
+                        <input
+                          type="number"
+                          value={rule.value}
+                          onChange={(e) => updateRule(rule.id, { value: e.target.value })}
+                          className="text-[11px] font-medium bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 w-20 text-slate-700 outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-500/10"
+                        />
+                      )}
+                      {rule.type === 'select' && (
+                        <select
+                          value={rule.value}
+                          onChange={(e) => updateRule(rule.id, { value: e.target.value })}
+                          className="text-[11px] font-medium bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-slate-700 outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-500/10"
+                        >
+                          {fieldDef.options.map((o) => <option key={o} value={o}>{o}</option>)}
+                        </select>
+                      )}
+                      <button onClick={() => removeRule(rule.id)} className="text-slate-400 hover:text-rose-500 ml-auto transition-colors">
+                        <X size={14} />
+                      </button>
+                    </Reorder.Item>
+                  );
+                })}
+              </Reorder.Group>
 
               {/* Add Rule Button */}
               <button
                 onClick={addRule}
-                className="flex items-center gap-1 text-[11px] font-semibold text-indigo-600 hover:text-indigo-800 transition-colors"
+                className="flex items-center gap-1.5 text-[11px] font-semibold text-indigo-600 hover:text-indigo-800 transition-colors px-2 py-1.5 rounded-lg hover:bg-indigo-50"
               >
                 <Plus size={12} /> Add Rule
               </button>
 
-              {/* Results Bar */}
-              <div className="p-3 rounded-lg bg-indigo-50/70 border border-indigo-100">
-                <div className="flex items-center justify-between mb-1.5">
-                  <div className="flex items-center gap-2">
-                    <Users size={12} className="text-indigo-600" />
-                    <span className="text-[11px] font-bold text-indigo-700">
-                      {matchingProfiles.length} of {unifiedProfiles.length} profiles match
-                    </span>
+              {/* Results Bar with animated donut and counter */}
+              <div className="p-3 rounded-xl bg-indigo-50/70 border border-indigo-100">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-3">
+                    {/* Mini animated donut */}
+                    <div className="relative w-10 h-10 flex-shrink-0">
+                      <svg className="w-full h-full -rotate-90" viewBox="0 0 40 40">
+                        <circle cx="20" cy="20" r="16" stroke="#e0e7ff" strokeWidth="4" fill="none" />
+                        <motion.circle
+                          cx="20" cy="20" r="16"
+                          stroke="#6366f1"
+                          strokeWidth="4"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeDasharray={`${2 * Math.PI * 16}`}
+                          animate={{ strokeDashoffset: 2 * Math.PI * 16 * (1 - matchPct / 100) }}
+                          transition={{ duration: 0.5, ease: 'easeOut' }}
+                        />
+                      </svg>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-[9px] font-black text-indigo-600">{matchPct}%</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <Users size={12} className="text-indigo-600" />
+                        <span className="text-[11px] font-bold text-indigo-700">
+                          <AnimatedCounter value={matchingProfiles.length} className="text-indigo-800" /> of {unifiedProfiles.length} profiles match
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <span className="text-[11px] font-bold text-indigo-500">{matchPct}%</span>
                 </div>
+
+                {/* Match bar */}
                 <div className="w-full h-2 bg-indigo-100 rounded-full overflow-hidden">
                   <motion.div
                     className="h-full rounded-full"
@@ -203,6 +273,7 @@ export default function SegmentBuilder() {
                     transition={{ duration: 0.4 }}
                   />
                 </div>
+
                 {rules.length > 0 && matchingProfiles.length > 0 && (
                   <div className="flex gap-1.5 mt-2 flex-wrap">
                     {matchingProfiles.slice(0, 5).map((p) => (

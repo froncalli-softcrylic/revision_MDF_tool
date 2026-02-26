@@ -72,14 +72,14 @@ export default function SourceDependencyMap() {
     .filter((r) => r.requires.some((id) => selectedSources.includes(id)) && !r.requires.every((id) => selectedSources.includes(id)));
 
   return (
-    <div className="glass-card overflow-hidden">
+    <div className="overflow-hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full p-4 flex items-center justify-between hover:bg-slate-50/50 transition-colors"
+        className="w-full flex items-center justify-between hover:bg-slate-50/50 transition-colors"
       >
         <div className="flex items-center gap-2">
           <Network size={14} className="text-violet-600" />
-          <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Source Synergies</h3>
+          <h3 className="text-base font-bold text-slate-900 uppercase tracking-wider">Source Synergies</h3>
           {matchedRules.length > 0 && (
             <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full border border-emerald-100">
               {matchedRules.length} active
@@ -100,7 +100,7 @@ export default function SourceDependencyMap() {
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
           >
-            <div className="px-4 pb-4 space-y-2">
+            <div className="pb-4 pt-2 space-y-4">
               {/* Active synergies */}
               {matchedRules.map((rule, idx) => (
                 <motion.div

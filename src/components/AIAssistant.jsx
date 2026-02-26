@@ -2,11 +2,10 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, Send, User, Sparkles, MessageSquare, X } from 'lucide-react';
+import { Bot, Send, User, Sparkles, MessageSquare, X, GripVertical } from 'lucide-react';
 import { useMDFStore } from '@/store/store';
 
 function MarkdownText({ text }) {
-  // Simple markdown-like rendering for bold and newlines
   const parts = text.split(/(\*\*[^*]+\*\*|\n)/g);
   return (
     <>
@@ -22,6 +21,56 @@ function MarkdownText({ text }) {
       })}
     </>
   );
+}
+
+// Contextual suggestions based on processing stage
+function getContextualSuggestions(processingStage) {
+  switch (processingStage) {
+    case 'ingesting':
+      return [
+        'What data sources are being ingested?',
+        'How does MDF handle different formats?',
+      ];
+    case 'hygiene':
+      return [
+        'What data quality issues were found?',
+        'How does Data Hygiene standardize records?',
+        'What formats does MDF normalize?',
+      ];
+    case 'identity':
+      return [
+        'How does Identity Resolution work?',
+        'What matching algorithms are used?',
+        'Explain deterministic vs probabilistic matching',
+      ];
+    case 'profiling':
+      return [
+        'What is a Golden Record?',
+        'How are conflicting fields resolved?',
+        'How many profiles were unified?',
+      ];
+    case 'measurement':
+    case 'activating':
+      return [
+        'What KPIs can I measure now?',
+        'Explain multi-touch attribution',
+        'How does clean data improve ROI?',
+      ];
+    case 'complete':
+      return [
+        'What ROI can I expect from MDF?',
+        'How do I build audience segments?',
+        'What are the next steps after unification?',
+        'Summarize the simulation results',
+      ];
+    default:
+      return [
+        'What is an MDF?',
+        'Explain Identity Resolution',
+        'How does Data Hygiene work?',
+        'What is a Golden Record?',
+      ];
+  }
 }
 
 export default function AIAssistant({ isFloating = false }) {
@@ -51,12 +100,7 @@ export default function AIAssistant({ isFloating = false }) {
     }
   };
 
-  const suggestions = [
-    'What is an MDF?',
-    'Explain Identity Resolution',
-    'How does Data Hygiene work?',
-    'What is a Golden Record?',
-  ];
+  const suggestions = getContextualSuggestions(processingStage);
 
   // If it's the floating version but currently closed, only render the FAB.
   if (isFloating && !isOpen) {
@@ -80,13 +124,32 @@ export default function AIAssistant({ isFloating = false }) {
     );
   }
 
+  // Stage awareness label
+  const stageLabel = processingStage !== 'idle' && processingStage !== 'complete'
+    ? `Observing: ${processingStage}`
+    : processingStage === 'complete'
+    ? 'Simulation complete'
+    : null;
+
   // The chat widget content
   const chatContent = (
-    <div className={`glass-card flex flex-col ${isFloating ? 'h-[600px] w-[350px] shadow-2xl relative overflow-hidden' : 'h-full min-h-[600px] lg:min-h-0 min-[1440px]:h-[calc(100vh-105px)]'}`}>
+    <div className={`glass-card flex flex-col ${isFloating ? 'h-[600px] w-[380px] shadow-2xl relative overflow-hidden' : 'h-full min-h-[600px] lg:min-h-0 min-[1440px]:h-[calc(100vh-105px)]'}`}
+      style={isFloating ? {
+        background: 'rgba(255, 255, 255, 0.85)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: '1px solid rgba(226, 232, 240, 0.6)',
+      } : {}}
+    >
       {/* Header */}
       <div className="p-4 border-b border-slate-200 flex-shrink-0 bg-white/50">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
+            {isFloating && (
+              <div className="cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-400 transition-colors">
+                <GripVertical size={16} />
+              </div>
+            )}
             <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-violet-50">
               <Bot size={20} className="text-violet-600" />
             </div>
@@ -109,6 +172,18 @@ export default function AIAssistant({ isFloating = false }) {
             </button>
           )}
         </div>
+        {/* Contextual stage awareness bar */}
+        {stageLabel && (
+          <motion.div
+            className="mt-2 px-3 py-1.5 rounded-lg bg-indigo-50 border border-indigo-100 flex items-center gap-2"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse-dot" />
+            <span className="text-[11px] font-bold text-indigo-600 capitalize">{stageLabel}</span>
+          </motion.div>
+        )}
       </div>
 
       {/* Messages */}
@@ -175,23 +250,35 @@ export default function AIAssistant({ isFloating = false }) {
         <div ref={endRef} />
       </div>
 
-      {/* Suggestions */}
-      {chatMessages.length <= 2 && (
-        <div className="px-5 pb-3 flex-shrink-0">
-          <p className="text-base font-medium text-slate-500 mb-2">Try asking:</p>
-          <div className="flex flex-wrap gap-2">
-            {suggestions.map((s) => (
-              <button
-                key={s}
-                onClick={() => addUserMessage(s)}
-                className="px-3 py-1.5 text-base font-medium rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-300 hover:bg-indigo-50 transition-all shadow-sm"
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Contextual Suggestions */}
+      <div className="px-5 pb-3 flex-shrink-0">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={processingStage}
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -5 }}
+            transition={{ duration: 0.2 }}
+          >
+            <p className="text-[11px] font-medium text-slate-400 mb-1.5">
+              {processingStage !== 'idle' && processingStage !== 'complete'
+                ? '💡 Context-aware suggestions:'
+                : '💬 Try asking:'}
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {suggestions.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => addUserMessage(s)}
+                  className="px-2.5 py-1 text-[11px] font-medium rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-300 hover:bg-indigo-50 transition-all shadow-sm"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
 
       {/* Input */}
       <div className="p-4 border-t border-slate-200 flex-shrink-0 bg-slate-50 rounded-b-3xl">
@@ -237,6 +324,10 @@ export default function AIAssistant({ isFloating = false }) {
               initial={{ opacity: 0, scale: 0.8, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.8, y: 20 }}
+              drag
+              dragMomentum={false}
+              dragConstraints={{ top: -400, left: -800, right: 20, bottom: 20 }}
+              dragElastic={0.1}
             >
               {chatContent}
             </motion.div>

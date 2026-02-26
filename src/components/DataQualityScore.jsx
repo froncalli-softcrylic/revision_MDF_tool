@@ -3,6 +3,46 @@
 import { motion } from 'framer-motion';
 import { TrendingUp, AlertTriangle, CheckCircle2, ArrowRight } from 'lucide-react';
 import { useMDFStore } from '@/store/store';
+import { useState, useEffect, useRef } from 'react';
+
+/**
+ * AnimatedNumber — counts up from 0 to `value` over `duration` ms
+ */
+function AnimatedNumber({ value, duration = 1200, delay = 0, className = '', style = {} }) {
+  const [display, setDisplay] = useState(0);
+  const rafRef = useRef(null);
+  const startRef = useRef(null);
+  const hasStarted = useRef(false);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      hasStarted.current = true;
+      startRef.current = null;
+
+      const animate = (timestamp) => {
+        if (!startRef.current) startRef.current = timestamp;
+        const elapsed = timestamp - startRef.current;
+        const progress = Math.min(elapsed / duration, 1);
+        // Ease-out cubic
+        const eased = 1 - Math.pow(1 - progress, 3);
+        setDisplay(Math.round(eased * value));
+
+        if (progress < 1) {
+          rafRef.current = requestAnimationFrame(animate);
+        }
+      };
+
+      rafRef.current = requestAnimationFrame(animate);
+    }, delay);
+
+    return () => {
+      clearTimeout(timeout);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [value, duration, delay]);
+
+  return <span className={className} style={style}>{display}</span>;
+}
 
 function QualityGauge({ label, score, color, delay = 0 }) {
   return (
@@ -29,15 +69,13 @@ function QualityGauge({ label, score, color, delay = 0 }) {
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <motion.span
+          <AnimatedNumber
+            value={score}
+            duration={1200}
+            delay={(delay + 0.6) * 1000}
             className="text-2xl font-black"
             style={{ color }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: delay + 0.6 }}
-          >
-            {score}
-          </motion.span>
+          />
         </div>
       </div>
     </motion.div>

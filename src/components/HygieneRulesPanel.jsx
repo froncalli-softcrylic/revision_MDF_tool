@@ -20,8 +20,8 @@ export default function HygieneRulesPanel() {
   const activeCount = Object.values(hygieneRules).filter(Boolean).length;
 
   return (
-    <div className="glass-card p-4">
-      <div className="flex items-center gap-2 mb-3">
+    <div>
+      <div className="flex items-center gap-2 mb-4">
         <Sparkles size={14} className="text-cyan-600" />
         <h3 className="text-base font-bold text-slate-900 uppercase tracking-wider">Hygiene Rules</h3>
         <span className="text-sm font-bold text-cyan-700 bg-cyan-50 px-1.5 py-0.5 rounded-full border border-cyan-100">

@@ -3,9 +3,10 @@
 import { motion } from 'framer-motion';
 import {
   TrendingUp, Users, GitMerge, Target, Gauge, ArrowDown, ArrowUp,
-  CheckCircle2, AlertTriangle
+  CheckCircle2, AlertTriangle, Loader2
 } from 'lucide-react';
 import { useMDFStore } from '@/store/store';
+import SkeletonLoader from './SkeletonLoader';
 
 function MetricCard({ icon: Icon, label, value, subtitle, color, delay = 0 }) {
   return (
@@ -65,7 +66,27 @@ export default function OutcomeDashboard() {
   const unifiedProfiles = useMDFStore((s) => s.unifiedProfiles);
   const identityClusters = useMDFStore((s) => s.identityClusters);
 
-  if (processingStage !== 'complete') return null;
+  if (processingStage === 'idle') return null;
+
+  if (processingStage !== 'complete') {
+    return (
+      <motion.div
+        className="glass-card-sm p-5 bg-gradient-to-br from-white to-slate-50/50 dark:from-slate-900 dark:to-slate-800/50 border-slate-200 dark:border-slate-800"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="flex items-center gap-2 mb-4">
+          <TrendingUp size={16} className="text-indigo-600 dark:text-indigo-400" />
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white">Business Outcomes</h3>
+          <span className="badge text-sm ml-auto bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center gap-1.5"><Loader2 size={12} className="animate-spin" /> Processing...</span>
+        </div>
+        
+        <SkeletonLoader type="card" count={4} className="grid grid-cols-2 gap-2 mb-3" />
+        <SkeletonLoader type="row" count={1} className="" />
+      </motion.div>
+    );
+  }
 
   const totalRaw = rawData.length;
   const totalProfiles = unifiedProfiles.length;

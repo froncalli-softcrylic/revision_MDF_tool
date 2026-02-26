@@ -7,7 +7,7 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: 'MDF Simulator — Marketing Data Foundation',
+  title: 'Marketing Data Foundation Tool',
   description: 'Visualize how raw marketing data flows through an enterprise Marketing Data Foundation, gets cleaned, identity-resolved, and emerges as Golden Records for downstream MarTech activation.',
 };
 

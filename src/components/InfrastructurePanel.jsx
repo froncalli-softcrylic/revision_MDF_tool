@@ -47,22 +47,22 @@ export default function InfrastructurePanel() {
   return (
     <div className="space-y-4">
       {/* Panel Header */}
-      <div className="glass-card p-6">
-        <div className="flex items-center gap-4 mb-1">
+      <div>
+        <div className="flex items-center gap-4 mb-4">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-cyan-50">
             <Database size={20} className="text-cyan-600" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-slate-900">Client Data Infrastructure</h2>
-            <p className="text-base text-slate-500 font-medium">
-              {selectedSources.length} of {SOURCE_CATALOG.length} sources selected
+            <h2 className="text-xl font-bold text-slate-900">Data Infrastructure</h2>
+            <p className="text-sm text-slate-500 font-medium">
+              Toggle raw data sources to ingest
             </p>
           </div>
         </div>
       </div>
 
       {/* Search Bar + Collapse All */}
-      <div className="glass-card p-3">
+      <div className="mb-4">
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -98,7 +98,7 @@ export default function InfrastructurePanel() {
         return (
           <motion.div
             key={category.key}
-            className="glass-card overflow-hidden"
+            className="bg-slate-50/50 rounded-xl border border-slate-100 overflow-hidden"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
@@ -213,56 +213,8 @@ export default function InfrastructurePanel() {
           </motion.div>
         );
       })}
-
-      {/* Run Simulation Button */}
-      <motion.button
-        className={`w-full py-4 px-6 rounded-xl font-bold text-xl flex items-center justify-center gap-3 hover-lift transition-all duration-300 shadow-sm relative overflow-hidden ${
-          isRunning
-            ? 'bg-indigo-100 text-indigo-500 cursor-not-allowed border-none'
-            : isComplete
-            ? 'bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100'
-            : selectedSources.length > 0
-            ? 'text-white cursor-pointer border-0'
-            : 'bg-slate-100 text-slate-400 font-semibold cursor-not-allowed border-none'
-        }`}
-        style={
-          !isRunning && !isComplete && selectedSources.length > 0
-            ? { background: 'var(--gradient-primary)', boxShadow: '0 8px 16px -4px rgba(99,102,241,0.3)' }
-            : {}
-        }
-        onClick={() => !isRunning && selectedSources.length > 0 && runSimulation()}
-        whileHover={!isRunning && selectedSources.length > 0 ? { scale: 1.02 } : {}}
-        whileTap={!isRunning && selectedSources.length > 0 ? { scale: 0.98 } : {}}
-        disabled={isRunning || selectedSources.length === 0}
-      >
-        {/* Shimmer effect when running */}
-        {isRunning && (
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12"
-            animate={{ left: ['-100%', '200%'] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
-          />
-        )}
-        {isRunning ? (
-          <>
-            <Loader2 size={16} className="animate-spin" />
-            Processing...
-          </>
-        ) : isComplete ? (
-          <>
-            <CheckCircle2 size={16} />
-            Re-Run Simulation
-          </>
-        ) : (
-          <>
-            <Play size={16} />
-            Run MDF Simulation
-          </>
-        )}
-      </motion.button>
-
       {/* Source Count */}
-      <div className="text-center pt-1">
+      <div className="text-center pt-2">
         <p className="text-sm font-medium text-slate-500">
           {selectedSources.length} of {SOURCE_CATALOG.length} sources selected
         </p>

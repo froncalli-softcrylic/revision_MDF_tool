@@ -191,7 +191,7 @@ function buildUnifiedProfiles(clusters, allRawRecords) {
 
 function getSourceSelectionMessage(sources) {
   if (sources.length === 0) {
-    return "👋 Welcome to the MDF Simulator! Toggle on your data sources in the left panel to begin. I'll explain how the MDF processes and unifies your data.";
+    return "👋 Welcome to the Marketing Data Foundation Tool! Toggle on your data sources in the left panel to begin. I'll explain how the MDF processes and unifies your data.";
   }
 
   const catalog = SOURCE_CATALOG;
@@ -255,6 +255,10 @@ function getStageMessages(stage, profileCount, storeState) {
 // ─── The Store ───────────────────────────────────────────────────────────────
 
 export const useMDFStore = create((set, get) => ({
+  // ── Theme slice ────────────────────────────────────────────────────────────
+  theme: 'light', // 'light' | 'dark'
+  toggleTheme: () => set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
+
   // ── Sources slice ──────────────────────────────────────────────────────────
   selectedSources: [],
 
@@ -297,7 +301,7 @@ export const useMDFStore = create((set, get) => ({
 
   // ── Chat slice ─────────────────────────────────────────────────────────────
   chatMessages: [
-    { id: '1', role: 'assistant', content: "👋 Welcome to the MDF Simulator! Toggle on your data sources in the left panel to begin. I'll explain how the MDF processes and unifies your data.", timestamp: new Date().toISOString() },
+    { id: '1', role: 'assistant', content: "👋 Welcome to the Marketing Data Foundation Tool! Toggle on your data sources in the left panel to begin. I'll explain how the MDF processes and unifies your data.", timestamp: new Date().toISOString() },
   ],
 
   // ── Actions ────────────────────────────────────────────────────────────────

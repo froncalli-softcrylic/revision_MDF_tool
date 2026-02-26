@@ -48,8 +48,8 @@ export default function ScenarioPresets() {
   const isRunning = processingStage !== 'idle' && processingStage !== 'complete';
 
   return (
-    <div className="glass-card p-4">
-      <div className="flex items-center justify-between mb-3">
+    <div>
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Sparkles size={14} className="text-purple-600" />
           <h3 className="text-base font-bold text-slate-900 uppercase tracking-wider">Industry Presets</h3>

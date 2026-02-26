@@ -45,15 +45,15 @@ export default function ConsentLayer() {
   const availableForPersonalization = consentFlags.web_tracking ? unifiedProfiles.length : Math.round(unifiedProfiles.length * 0.4);
 
   return (
-    <div className="glass-card overflow-hidden">
+    <div className="overflow-hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full p-4 flex items-center justify-between hover:bg-slate-50/50 transition-colors"
+        className="w-full flex items-center justify-between hover:bg-slate-50/50 transition-colors"
       >
         <div className="flex items-center gap-2">
           <Shield size={14} className="text-amber-600" />
-          <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Privacy & Consent</h3>
-          <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-full border border-amber-100">
+          <h3 className="text-base font-bold text-slate-900 uppercase tracking-wider">Privacy & Consent</h3>
+          <span className="text-sm font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-full border border-amber-100">
             {activeConsents}/{totalFields} active
           </span>
         </div>
@@ -71,7 +71,7 @@ export default function ConsentLayer() {
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
           >
-            <div className="px-4 pb-4 space-y-3">
+            <div className="pb-4 pt-2 space-y-4">
               <p className="text-[10px] text-slate-500 font-medium">
                 Toggle consent flags to see how GDPR/CCPA compliance affects data flow to MarTech.
               </p>

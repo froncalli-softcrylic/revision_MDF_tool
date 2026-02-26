@@ -20,6 +20,7 @@ import PerSourceQuality from './PerSourceQuality';
 import ROICalculator from './ROICalculator';
 import DataVolumeSimulator from './DataVolumeSimulator';
 import ComparisonMode from './ComparisonMode';
+import SkeletonLoader from './SkeletonLoader';
 
 const STAGES = [
   { id: 'hygiene', label: 'Data Hygiene', icon: Sparkles, color: '#22d3ee', description: 'Standardize formats', whyItMatters: 'Without standardization, "john@gmail.com" and "JOHN@Gmail.com" look like different people, causing missed matches and inflated profiles.' },
@@ -335,7 +336,11 @@ export default function MDFEngine() {
           )}
         </div>
 
-        {unifiedProfiles.length === 0 ? (
+        {isActive && processingStage !== 'complete' && unifiedProfiles.length === 0 ? (
+          <div className="mt-4">
+            <SkeletonLoader type="profile" count={5} />
+          </div>
+        ) : unifiedProfiles.length === 0 ? (
           <div className="text-center py-10">
             <UserCircle size={40} className="mx-auto text-slate-700 mb-3" />
             <p className="text-lg text-slate-500">No unified profiles yet</p>
@@ -395,37 +400,63 @@ export default function MDFEngine() {
         )}
       </div>
 
-      {/* No Bypass Visual */}
-      <NoBypassVisual isActive={isActive} />
-
-      {/* Ingestion Lanes */}
-      <IngestionLanes />
-
-      {/* Before/After Hygiene Panel */}
-      <BeforeAfterPanel />
-
-      {/* Data Quality Score */}
+      {/* ── Section 1: DATA QUALITY OVERVIEW ── */}
+      <motion.div
+        className="flex items-center gap-3 mt-2 mb-1"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="h-px flex-1 bg-gradient-to-r from-indigo-200 to-transparent" />
+        <span className="text-[11px] font-bold text-indigo-500 uppercase tracking-widest whitespace-nowrap">📊 Data Quality Overview</span>
+        <div className="h-px flex-1 bg-gradient-to-l from-indigo-200 to-transparent" />
+      </motion.div>
       <DataQualityScore />
-
-      {/* Outcome Dashboard */}
-      <OutcomeDashboard />
-
-      {/* Audience Export Simulator */}
-      <AudienceExportSimulator />
-
-      {/* Audience Segment Builder */}
-      <SegmentBuilder />
-
-      {/* Per-Source Data Quality */}
       <PerSourceQuality />
 
-      {/* ROI Calculator */}
+      {/* ── Section 2: IMPACT OF CLEANSING ── */}
+      <motion.div
+        className="flex items-center gap-3 mt-2 mb-1"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
+        <div className="h-px flex-1 bg-gradient-to-r from-cyan-200 to-transparent" />
+        <span className="text-[11px] font-bold text-cyan-600 uppercase tracking-widest whitespace-nowrap">✨ Impact of Cleansing</span>
+        <div className="h-px flex-1 bg-gradient-to-l from-cyan-200 to-transparent" />
+      </motion.div>
+      <BeforeAfterPanel />
+      <NoBypassVisual isActive={isActive} />
+      <IngestionLanes />
+
+      {/* ── Section 3: AUDIENCE ACTIVATION ── */}
+      <motion.div
+        className="flex items-center gap-3 mt-2 mb-1"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <div className="h-px flex-1 bg-gradient-to-r from-violet-200 to-transparent" />
+        <span className="text-[11px] font-bold text-violet-600 uppercase tracking-widest whitespace-nowrap">🎯 Audience Activation</span>
+        <div className="h-px flex-1 bg-gradient-to-l from-violet-200 to-transparent" />
+      </motion.div>
+      <SegmentBuilder />
+      <AudienceExportSimulator />
+
+      {/* ── Section 4: BUSINESS VALUE ── */}
+      <motion.div
+        className="flex items-center gap-3 mt-2 mb-1"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+      >
+        <div className="h-px flex-1 bg-gradient-to-r from-emerald-200 to-transparent" />
+        <span className="text-[11px] font-bold text-emerald-600 uppercase tracking-widest whitespace-nowrap">💰 Business Value</span>
+        <div className="h-px flex-1 bg-gradient-to-l from-emerald-200 to-transparent" />
+      </motion.div>
       <ROICalculator />
-
-      {/* Data Volume Simulator */}
+      <OutcomeDashboard />
       <DataVolumeSimulator />
-
-      {/* Before/After Comparison */}
       <ComparisonMode />
     </div>
   );
