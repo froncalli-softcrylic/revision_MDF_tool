@@ -181,7 +181,7 @@ export default function CommandPalette() {
             <div className="max-h-[300px] overflow-y-auto p-2">
               {filteredActions.length === 0 ? (
                 <div className="px-4 py-8 text-center text-slate-500 text-sm">
-                  No results found for "{query}"
+                  No results found for &ldquo;{query}&rdquo;
                 </div>
               ) : (
                 filteredActions.map((action, index) => {
